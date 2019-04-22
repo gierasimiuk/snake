@@ -1,2 +1,2 @@
 # snake
-JavaScript version of the famous game
+Browser version of the famous game Snake.
