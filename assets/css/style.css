@@ -36,9 +36,10 @@ body {
 .board {
     background-color: #cceeff;
     width: 500px;
-    height: 450px;
+    height: 375px;
     margin: 20px 0;
     border: solid 1px black;
+    padding: 2px;
 }
 .status {
     font-weight: heavy;
@@ -53,3 +54,28 @@ body {
 .author {
     line-height: 1.6;
 }
+.cell {
+    display: block;
+    width: 21px;
+    height: 21px;
+    float: left;
+    margin: 2px;
+  }
+.eaten-apple {
+    margin: 1px;
+    width:  16px;
+    height: 16px;
+    background: green;
+}
+.snake {
+    background: #333300;
+}
+.space {
+    background: #99ccff;
+}
+.apple {
+    background-size: contain;
+    background-image: url(../img/apple.png);
+    background-repeat: no-repeat;
+}
+  

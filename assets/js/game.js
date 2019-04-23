@@ -1,12 +1,11 @@
 class Game {
-    
     constructor(selector) {
         this.$el = $(selector);
         this.score = 0;
         this.played = 0;
         this.board = new Board();
         this.active = false;
-        this.speed = 500;
+        this.speed = 120;
         $('html').keydown(function(e) {
             this.keydown(e);
         }.bind(this));
@@ -14,14 +13,18 @@ class Game {
 
     startGame() {
         this.clearStatus();
+        this.board.restart();
         this.board.respawnApple();
-        window.setInterval(function() {
+        this.firstStep();
+        this.intervalId = window.setInterval(function() {
             this.step();
         }.bind(this), this.speed);
-        this.active = true;        
+        this.active = true;      
     }
     
     gameOver() {
+        window.clearInterval(this.intervalId);
+        this.intervalId = null;
         this.setStatus('GAME OVER!');
         this.active = false;
     }
@@ -31,15 +34,25 @@ class Game {
             this.board.turnSnake(direction);
         }
     }
+
+    firstStep() {
+        this.$el.html(this.board.render());
+    }
     
     step() {
+        if (!this.active) {
+            return;
+        }
+        // console.log(new Date().toUTCString());
         if (this.board.willSnakeDie()) {
             this.gameOver();
+            return;
         }
-        else if (this.board.willSnakeEatApple()) {
-            this.board.eatApple();
-        } 
-        this.board.render();
+        // else if (this.board.willSnakeEatApple()) {
+        //     this.board.eatApple();
+        // } 
+        this.board.move();
+        this.$el.html(this.board.render());
     }
 
     keydown(e) {
@@ -58,6 +71,7 @@ class Game {
     }
 
     setStatus(status) {
+        $('#board .cell').remove(); 
         $('#board').append($ ('<h3 class="status">').addClass('game-status').text(status));
     }
 }
