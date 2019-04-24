@@ -12,22 +12,18 @@ class Game {
     }
 
     startGame() {
+        if (this.intervalId) {
+            return;
+        }
         this.clearStatus();
         this.board.restart();
-        this.board.respawnApple();
         this.firstStep();
         this.intervalId = window.setInterval(function() {
             this.step();
         }.bind(this), this.speed);
-        this.active = true;      
+        this.active = true;
     }
-    
-    gameOver() {
-        window.clearInterval(this.intervalId);
-        this.intervalId = null;
-        this.setStatus('GAME OVER!');
-        this.active = false;
-    }
+
     
     navigate(direction) {
         if (this.active) {
@@ -43,27 +39,45 @@ class Game {
         if (!this.active) {
             return;
         }
-        // console.log(new Date().toUTCString());
         if (this.board.willSnakeDie()) {
             this.gameOver();
             return;
         }
-        // else if (this.board.willSnakeEatApple()) {
-        //     this.board.eatApple();
-        // } 
+        else if (this.board.willSnakeEatApple()) {
+            this.board.eatApple();
+        } else if (this.board.hasSnakeEatenApple()) {
+            this.board.eatApple();
+        }
         this.board.move();
         this.$el.html(this.board.render());
     }
 
     keydown(e) {
         switch(e.which) {
-          case 37: this.navigate(Coordinates.WEST); break;
-          case 38: this.navigate(Coordinates.NORTH); break;
-          case 39: this.navigate(Coordinates.EAST); break;
-          case 40: this.navigate(Coordinates.SOUTH); break;
+          case 37: this.navigate(Coordinate.WEST); break;
+          case 38: this.navigate(Coordinate.NORTH); break;
+          case 39: this.navigate(Coordinate.EAST); break;
+          case 40: this.navigate(Coordinate.SOUTH); break;
           case 32: this.startGame(); break;
           default: return;
         }
+    }
+
+    gameOver() {
+        this.processEndOfGame();
+        this.setStatus('GAME OVER!');
+        $('.stat-played').html(this.played);
+    }
+
+    processEndOfGame() {
+        window.clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.active = false;
+        this.played++;
+    }
+
+    updateScore(newScore) {
+        $('.stat-score').html(this.score);
     }
 
     clearStatus() {

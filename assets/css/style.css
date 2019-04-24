@@ -60,11 +60,8 @@ body {
     height: 21px;
     float: left;
     margin: 2px;
-  }
+}
 .eaten-apple {
-    margin: 1px;
-    width:  16px;
-    height: 16px;
     background: green;
 }
 .snake {

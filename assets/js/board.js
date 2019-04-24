@@ -7,44 +7,10 @@ class Board {
         this.apple = new Apple();
         this.snake = new Snake();
     }
-    
-    eatApple() {
-        this.snake.eat(this.apple);
-        respawnApple();
-    }
 
     restart() {
         this.apple = new Apple();
         this.snake = new Snake();
-    }
-    
-    willSnakeDie() {
-        let head = this.snake.head();
-        let direction = this.snake.direction;
-        return (
-            (head[1] === this.dimensions[1] - 1 && direction === Coordinates.SOUTH) ||
-            (head[1] === 0 && direction === Coordinates.NORTH) ||
-            (head[0] === this.dimensions[0] - 1 && direction === Coordinates.EAST) ||
-            (head[0] === 0 && direction === Coordinates.WEST) ||
-            (direction === Coordinates.NORTH && this.isCellSnake([head[0], head[1] - 1])) ||
-            (direction === Coordinates.SOUTH && this.isCellSnake([head[0], head[1] + 1])) ||
-            (direction === Coordinates.WEST && this.isCellSnake([head[0] - 1, head[1]])) ||
-            (direction === Coordinates.EAST && this.isCellSnake([head[0] + 1], head[1]))
-        );
-    }
-    
-    willSnakeEatApple() {
-        return false;
-    }
-    
-    turnSnake(direction) {
-        this.snake.turn(direction);
-    }
-    
-    respawnApple() {
-        do {
-            this.apple.respawn();
-        } while (this.isCellSnake(this.apple.position))
     }
 
     render() {
@@ -54,12 +20,12 @@ class Board {
                 const cell = $("<div>");
                 const position = [j, i];
                 cell.addClass('cell');
-                if (this.isCellSnake(position)) {
+                if (this.isCellEatenApple(position)) {
+                    cell.addClass('eaten-apple');
+                } else if (this.isCellSnake(position)) {
                     cell.addClass('snake');
                 } else if (this.isCellApple(position)) {
                     cell.addClass('apple');
-                } else if (this.isCellEatenApple(position)) {
-                    cell.addClass('eaten-apple');
                 } else {
                     cell.addClass('space');
                 }
@@ -68,21 +34,47 @@ class Board {
         }
         return grid;
     }
+
+    move() {
+        this.snake.move();
+    }
     
+    turnSnake(direction) {
+        this.snake.turn(direction);
+    }
+
+    eatApple() {
+        this.snake.eat(this.apple);
+        this.respawnApple();
+    }
+    
+    respawnApple() {
+        do {
+            this.apple.respawn(this.dimensions);
+        } while (this.isCellSnake(this.apple.position))
+    }
+    
+    hasSnakeEatenApple() {
+        return this.isCellApple(this.snake.head());
+    }
+
     isCellSnake(position) {
         return this.contains(this.snake.segments, position);
     }
     
     isCellApple(position) {
-        return this.equivalent(this.apple.position, position)
+        return this.equivalent(this.apple.position, position);
     }
     
     isCellEatenApple(position) {
+        const eaten = this.snake.getEatenApples();
+        for (let i = 0; i < eaten.length; i++) {
+            const apple = eaten[i];
+            if (this.equivalent(apple, position)) {
+                return true;
+            }
+        }
         return false;
-    }
-    
-    move() {
-        this.snake.move();
     }
     
     contains(segments, position) {
@@ -100,5 +92,37 @@ class Board {
             return true;
         }
         return false;
+    }
+
+    willSnakeEatApple() {
+        const head = this.snake.head();
+        const direction = this.snake.direction;
+        
+        const willEatApple = 
+           ((direction === Coordinate.NORTH && this.isCellApple([head[0], head[1] - 1])) ||
+            (direction === Coordinate.SOUTH && this.isCellApple([head[0], head[1] + 1])) ||
+            (direction === Coordinate.WEST && this.isCellApple([head[0] - 1, head[1]])) ||
+            (direction === Coordinate.EAST && this.isCellApple([head[0] + 1], head[1])));
+
+        return willEatApple;
+    }
+
+    willSnakeDie() {
+        const head = this.snake.head();
+        const direction = this.snake.direction;
+        
+        const willHitWall = 
+           ((head[1] === this.dimensions[1] - 1 && direction === Coordinate.SOUTH) ||
+            (head[1] === 0 && direction === Coordinate.NORTH) ||
+            (head[0] === this.dimensions[0] - 1 && direction === Coordinate.EAST) ||
+            (head[0] === 0 && direction === Coordinate.WEST));
+
+        const willHitSelf = 
+           ((direction === Coordinate.NORTH && this.isCellSnake([head[0], head[1] - 1])) ||
+            (direction === Coordinate.SOUTH && this.isCellSnake([head[0], head[1] + 1])) ||
+            (direction === Coordinate.WEST && this.isCellSnake([head[0] - 1, head[1]])) ||
+            (direction === Coordinate.EAST && this.isCellSnake([head[0] + 1], head[1])));
+
+        return willHitWall || willHitSelf;
     }
 }
