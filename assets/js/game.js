@@ -22,6 +22,7 @@ class Game {
             this.step();
         }.bind(this), this.speed);
         this.active = true;
+        $('.stat-score').html(0);
     }
 
     
@@ -42,11 +43,10 @@ class Game {
         if (this.board.willSnakeDie()) {
             this.gameOver();
             return;
-        }
-        else if (this.board.willSnakeEatApple()) {
+        } else if (this.board.willSnakeEatApple() || 
+                   this.board.hasSnakeEatenApple()) {
             this.board.eatApple();
-        } else if (this.board.hasSnakeEatenApple()) {
-            this.board.eatApple();
+            this.updateScore(this.score++);
         }
         this.board.move();
         this.$el.html(this.board.render());
@@ -74,6 +74,7 @@ class Game {
         this.intervalId = null;
         this.active = false;
         this.played++;
+        this.score = 0;
     }
 
     updateScore(newScore) {

@@ -6,6 +6,7 @@ class Snake {
         this.direction = Coordinate.EAST;
         this.segments = [[5, 7], [4, 7], [3, 7]];
         this.apples = [];
+        this.appleIndex = [];
     }
 
     /**
@@ -21,7 +22,9 @@ class Snake {
      * @param {Apple} apple the apple to consume.
      */
     eat(apple) {
+        apple.position.distance = 0;
         this.apples.push(apple.position);
+        this.grow = true;
     }
 
     /**
@@ -30,6 +33,10 @@ class Snake {
      */
     getEatenApples() {
         return this.apples;
+    }
+
+    getEatenAppleIndex() {
+        return this.appleIndex;
     }
 
     /**
@@ -66,17 +73,29 @@ class Snake {
     }
 
     /**
-     * Updates the snake's position given a delta.
+     * Updates the snake's segments given a segment delta.
      * 
      * @param {Coordinate} segment the delta {@link Coordinate}.
      */
     update(segment) {
+        var last = this.segments[this.segments.length - 1];
         for (var i = this.segments.length - 1; i > 0; i--) {
             this.segments[i] = this.segments[i - 1];
         }
         this.segments[0] = [
             this.segments[0][0] + segment[0], this.segments[0][1] + segment[1]
         ];
+        if (this.grow) {
+            this.segments.push(last);
+            this.grow = false;
+        }
+        for (var i = 0; i < this.apples.length; i++) {
+            if (this.apples[i].distance < this.segments.length) {
+                this.apples[i].distance++;
+            } else {
+                this.apples.pop();
+            }
+        }
     }
 
     /**
