@@ -3,8 +3,8 @@ class Snake {
      * Creates a new {@link Snake};
      */
     constructor() {
-        this.direction = Coordinate.EAST;
-        this.segments = [[5, 7], [4, 7], [3, 7]];
+        this.direction = Coordinate.Cardinal.EAST;
+        this.segments = [[5, 12], [4, 12], [3, 12]];
         this.apples = [];
         this.appleIndex = [];
     }
@@ -28,22 +28,18 @@ class Snake {
     }
 
     /**
-     * 
      * @return the apples eaten by this snake.
      */
     getEatenApples() {
         return this.apples;
     }
 
-    getEatenAppleIndex() {
-        return this.appleIndex;
-    }
-
     /**
-     * Turns in the direction of the given {@link Coordinate}. Note that this
-     * function does not move the snake, it strictly updates it's direction.
+     * Turns in the direction of the given {@link Coordinate.Cardinal}. Note 
+     * that this function does not move the snake, it only updates it's 
+     * direction.
      * 
-     * @param {Coordinate} direction the new direction.
+     * @param {Coordinate.Cardinal} direction the new direction.
      */
     turn(direction) {
         if (!Coordinate.isOpposite(this.direction, direction)) {
@@ -57,16 +53,16 @@ class Snake {
      */
     move() {
         let seg = this.head();
-        if (this.direction === Coordinate.NORTH) {
+        if (this.direction === Coordinate.Cardinal.NORTH) {
             seg = [0, -1];
         }
-        else if (this.direction === Coordinate.SOUTH) {
+        else if (this.direction === Coordinate.Cardinal.SOUTH) {
             seg = [0, 1];
         }
-        else if (this.direction === Coordinate.EAST) {
+        else if (this.direction === Coordinate.Cardinal.EAST) {
             seg = [1, 0];
         }
-        else if (this.direction === Coordinate.WEST) {
+        else if (this.direction === Coordinate.Cardinal.WEST) {
             seg = [-1, 0];
         }
         this.update(seg);
@@ -75,7 +71,7 @@ class Snake {
     /**
      * Updates the snake's segments given a segment delta.
      * 
-     * @param {Coordinate} segment the delta {@link Coordinate}.
+     * @param {Array} segment the delta consisting of an x, y coordinate. 
      */
     update(segment) {
         var last = this.segments[this.segments.length - 1];

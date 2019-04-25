@@ -3,12 +3,12 @@
     <head>
         <link href="https://fonts.googleapis.com/css?family=Orbitron|Raleway" rel="stylesheet">
         <meta charset="utf-8">
-        <title>Snake Game | M. Gierasimiuk</title>
+        <title>Snake Game</title>
         <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     </head>
     <body>
         <div class="game">
-            <h1 class="title">Snake</h1>
+            <h1 class="title">Snake Game</h1>
             <figure class="stats">
                 <h2 class="stat">Score: <span class="stat-score">0</span></h2>
                 <h2 class="stat">Played: <span class="stat-played">0</span></h2>
@@ -17,7 +17,7 @@
                 <section id='board' class="board">
                     <h3 class='status'>Press space to start new game!<br>Use arrow keys to navigate.</h3>
                 </section>
-                <aside class="author">© M. Gierasimiuk 2019</aside>
+                <aside class="author">© Michael Gierasimiuk 2019</aside>
             </figure>
         </div>
         <script src="assets/vendor/jquery-3.4.0.min.js"></script>
@@ -28,7 +28,7 @@
         <script src='assets/js/snake.js'></script>
         <script>
         $(function() {
-            new Game('#board');
+            new Game('#board').init();
         })
         </script>
     </body>

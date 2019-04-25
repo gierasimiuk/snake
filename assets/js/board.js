@@ -1,19 +1,29 @@
 class Board {
-    
+    /**
+     * Creates a new {@link Board}.
+     */
     constructor() {
-        this.width = 20;
-        this.height = 15;
+        this.width = 30;
+        this.height = 25;
         this.dimensions = [this.width, this.height];
         this.apple = new Apple();
         this.snake = new Snake();
     }
 
-    restart() {
+    /**
+     * Resets the {@link Board}. 
+     */
+    reset() {
         this.apple = new Apple();
         this.snake = new Snake();
     }
 
-    render() {
+    /**
+     * Renders the {@link Board}.
+     * 
+     * @param el the jquery element to draw on. 
+     */
+    render(el) {
         const grid = [];
         for (let i = 0; i < this.height; i++) {
             for (let j = 0; j < this.width; j++) {
@@ -32,7 +42,7 @@ class Board {
                 grid.push(cell);
             }
         }
-        return grid;
+        el.html(grid);
     }
 
     move() {
@@ -97,12 +107,13 @@ class Board {
     willSnakeEatApple() {
         const head = this.snake.head();
         const direction = this.snake.direction;
-        
+        const cardinal = Coordinate.Cardinal;
+
         const willEatApple = 
-           ((direction === Coordinate.NORTH && this.isCellApple([head[0], head[1] - 1])) ||
-            (direction === Coordinate.SOUTH && this.isCellApple([head[0], head[1] + 1])) ||
-            (direction === Coordinate.WEST && this.isCellApple([head[0] - 1, head[1]])) ||
-            (direction === Coordinate.EAST && this.isCellApple([head[0] + 1], head[1])));
+           ((direction === cardinal.NORTH && this.isCellApple([head[0], head[1] - 1])) ||
+            (direction === cardinal.SOUTH && this.isCellApple([head[0], head[1] + 1])) ||
+            (direction === cardinal.WEST && this.isCellApple([head[0] - 1, head[1]])) ||
+            (direction === cardinal.EAST && this.isCellApple([head[0] + 1], head[1])));
 
         return willEatApple;
     }
@@ -110,18 +121,19 @@ class Board {
     willSnakeDie() {
         const head = this.snake.head();
         const direction = this.snake.direction;
-        
+        const cardinal = Coordinate.Cardinal;
+
         const willHitWall = 
-           ((head[1] === this.dimensions[1] - 1 && direction === Coordinate.SOUTH) ||
-            (head[1] === 0 && direction === Coordinate.NORTH) ||
-            (head[0] === this.dimensions[0] - 1 && direction === Coordinate.EAST) ||
-            (head[0] === 0 && direction === Coordinate.WEST));
+           ((head[1] === this.dimensions[1] - 1 && direction === cardinal.SOUTH) ||
+            (head[1] === 0 && direction === cardinal.NORTH) ||
+            (head[0] === this.dimensions[0] - 1 && direction === cardinal.EAST) ||
+            (head[0] === 0 && direction === cardinal.WEST));
 
         const willHitSelf = 
-           ((direction === Coordinate.NORTH && this.isCellSnake([head[0], head[1] - 1])) ||
-            (direction === Coordinate.SOUTH && this.isCellSnake([head[0], head[1] + 1])) ||
-            (direction === Coordinate.WEST && this.isCellSnake([head[0] - 1, head[1]])) ||
-            (direction === Coordinate.EAST && this.isCellSnake([head[0] + 1], head[1])));
+           ((direction === cardinal.NORTH && this.isCellSnake([head[0], head[1] - 1])) ||
+            (direction === cardinal.SOUTH && this.isCellSnake([head[0], head[1] + 1])) ||
+            (direction === cardinal.WEST && this.isCellSnake([head[0] - 1, head[1]])) ||
+            (direction === cardinal.EAST && this.isCellSnake([head[0] + 1], head[1])));
 
         return willHitWall || willHitSelf;
     }

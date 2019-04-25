@@ -3,7 +3,7 @@ class Apple {
      * Creates a new {@link Apple} at location [14, 7] on the board.
      */
     constructor() {
-        this.position = [14, 7];
+        this.position = [25, 12];
     }
 
     /**
