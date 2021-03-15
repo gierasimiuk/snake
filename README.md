@@ -1,2 +1,2 @@
 # Snake
-Browser version of the famous game Snake.
+Browser version of the game 'Snake'.
